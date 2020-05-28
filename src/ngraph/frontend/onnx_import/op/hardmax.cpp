@@ -57,13 +57,14 @@ namespace ngraph
                     row_size = ngraph::onnx_import::reshape::interpret_as_scalar(row_size);
 
                     const auto indices_axis = 1;
-                    const auto topk = std::make_shared<default_opset::TopK>(
+                    const auto max_indices = std::make_shared<opset0::GetOutputElement>(
+                        std::make_shared<default_opset::TopK>(
                             coerced_tensor,
                             default_opset::Constant::create(ngraph::element::i64, Shape{}, {1}),
                             indices_axis,
                             default_opset::TopK::Mode::max,
-                            default_opset::TopK::SortType::none);
-                    const auto max_indices = topk->output(1);
+                            default_opset::TopK::SortType::none),
+                        1);
 
                     const auto on_value =
                         default_opset::Constant::create(ngraph::element::i64, Shape{}, {1});
