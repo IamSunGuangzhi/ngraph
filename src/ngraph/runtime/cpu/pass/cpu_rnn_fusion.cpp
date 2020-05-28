@@ -103,9 +103,9 @@ void ngraph::runtime::cpu::pass::VanillaRNNFusion::construct_vanilla_rnn()
         auto src_layer = pattern_map[src_layer_label];
         auto src_iter = pattern_map[src_iter_label];
 
-        size_t slc = src_layer->get_shape()[1];
-        size_t sic = src_iter->get_shape()[1];
-        size_t dlc = fused_weights->get_shape()[1];
+        size_t slc = src_layer->get_output_shape(0)[1];
+        size_t sic = src_iter->get_output_shape(0)[1];
+        size_t dlc = fused_weights->get_output_shape(0)[1];
         size_t n_gates = 1;
         size_t direction = 1;
         size_t n_layers = 1;
@@ -132,10 +132,8 @@ void ngraph::runtime::cpu::pass::VanillaRNNFusion::construct_vanilla_rnn()
                                                           n_layers,
                                                           rnn_type);
 
-        auto dst_layer = std::make_shared<ngraph::op::GetOutputElement>(rnn_node, 0);
-        auto dst_iter = std::make_shared<ngraph::op::GetOutputElement>(rnn_node, 1);
+        m.get_match_root()->output(0).replace(rnn_node->output(0));
 
-        ngraph::replace_node(m.get_match_root(), dst_layer);
         return true;
     };
 
