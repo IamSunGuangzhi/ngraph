@@ -234,7 +234,7 @@ void ngraph::runtime::cpu::pass::LSTMFusion::construct_onnx_lstmcell_fprop()
         // find the user's for {ht} and replace them with lstm_goe_0
         if (is_type<ngraph::op::GetOutputElement>(dst_layer))
         {
-            ngraph::replace_node(dst_layer, lstm_ht_output);
+            ngraph::replace_node(dst_layer->, lstm_ht_output);
         }
         return true;
     };
