@@ -348,10 +348,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_fprop_bn()
         {
             return false;
         }
-        auto normalized_output =
-            std::shared_ptr<Node>(new ngraph::op::GetOutputElement(bn_node, 0));
+        auto normalized_output = bn_node->output(0);
 
-        ngraph::replace_node(m.get_match_root(), normalized_output);
+        m.get_match_root()->output(0).replace(normalized_output);
         return true;
     };
 
@@ -1161,11 +1160,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_dropout()
                                                                gm->get_argument(3),
                                                                gm->get_argument(4));
 
-        auto goe1 = std::make_shared<ngraph::op::GetOutputElement>(dropout_n, 0);
-        ngraph::replace_node(m.get_match_root(), goe1);
+        m.get_match_root()->output(0).replace(dropout_n->output(0));
 
-        auto goe2 = std::make_shared<ngraph::op::GetOutputElement>(dropout_n, 1);
-        ngraph::replace_node(pattern_map[genmask_label], goe2);
+        pattern_map[genmask_label]->output(0).replace(dropout_n->output(1));
 
         return true;
     };
