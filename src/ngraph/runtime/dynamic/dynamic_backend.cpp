@@ -128,6 +128,15 @@ bool runtime::dynamic::DynamicExecutable::call(
     std::vector<int> merged_input_shapes;
     std::ostringstream key;
     size_t loop_count = 0;
+    for (size_t i=0; i<outputs.size(); i++)
+    {
+        if(m_wrapped_function->get_results()[i]->is_dynamic())
+        {
+            // Output i is dynamic so it's shape must be part of the key
+            NGRAPH_INFO << "dynamic output";
+            NGRAPH_INFO << outputs[i]->get_shape();
+        }
+    }
     for (auto& input : inputs)
     {
         if (m_wrapped_function->get_parameters()[loop_count]->is_relevant_to_shapes())
