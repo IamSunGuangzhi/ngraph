@@ -146,8 +146,8 @@ bool pattern::Matcher::is_contained_match(const NodeVector& exclusions, bool ign
 bool pattern::Matcher::match_value(const Output<Node>& pattern_value,
                                    const Output<Node>& graph_value)
 {
-    NGRAPH_INFO << "test match " << pattern_value << " to " << graph_value;
-    Node* pattern_node = pattern_value.get_node();
+    shared_ptr<Node> pattern_node = pattern_value.get_node_shared_ptr();
+    shared_ptr<Node> graph_node = graph_value.get_node_shared_ptr();
 
     // This env var allows one to specify node name patterns to abort pattern matching
     // at particular nodes. The upshot is that one can quickly zero in on an offending
@@ -155,7 +155,6 @@ bool pattern::Matcher::match_value(const Output<Node>& pattern_value,
     static const string node_skip_cregex = getenv_string("NGRAPH_FAIL_MATCH_AT");
     if (!node_skip_cregex.empty())
     {
-        Node* graph_node = graph_value.get_node();
         static const regex node_skip_regex(node_skip_cregex);
         if (regex_match(graph_node->get_name(), node_skip_regex))
         {
@@ -164,9 +163,7 @@ bool pattern::Matcher::match_value(const Output<Node>& pattern_value,
             return false;
         }
     }
-    bool rc = pattern_node->match_value(this, pattern_value, graph_value);
-    NGRAPH_INFO << rc << " **** " << graph_value << ", " << *pattern_value.get_node();
-    return rc;
+    return pattern_node->match_value(this, pattern_value, graph_value);
 }
 
 bool pattern::Matcher::match_permutation(const OutputVector& pattern_args, const OutputVector& args)
