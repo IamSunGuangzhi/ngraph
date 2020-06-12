@@ -15,6 +15,7 @@
 //*****************************************************************************
 
 #include "ngraph/pattern/op/label.hpp"
+#include "ngraph/log.hpp"
 #include "ngraph/pattern/matcher.hpp"
 #include "ngraph/pattern/op/or.hpp"
 #include "ngraph/pattern/op/true.hpp"
@@ -43,20 +44,29 @@ bool pattern::op::Label::match_value(Matcher* matcher,
                                      const Output<Node>& pattern_value,
                                      const Output<Node>& graph_value)
 {
+    NGRAPH_INFO << "Lable::match_value " << pattern_value << ", " << graph_value;
     if (m_predicate(graph_value))
     {
+        NGRAPH_INFO;
         auto& pattern_map = matcher->get_pattern_value_map();
         auto saved = matcher->start_match();
         matcher->add_node(graph_value);
         if (pattern_map.count(shared_from_this()))
         {
-            return saved.finish(pattern_map[shared_from_this()] == graph_value);
+            NGRAPH_INFO;
+            bool rc = saved.finish(pattern_map[shared_from_this()] == graph_value);
+            NGRAPH_INFO << rc;
+            return rc;
         }
         else
         {
+            NGRAPH_INFO;
             pattern_map[shared_from_this()] = graph_value;
-            return saved.finish(matcher->match_value(input_value(0), graph_value));
+            bool rc = saved.finish(matcher->match_value(input_value(0), graph_value));
+            NGRAPH_INFO << rc;
+            return rc;
         }
     }
+    NGRAPH_INFO;
     return false;
 }

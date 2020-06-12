@@ -15,6 +15,7 @@
 //*****************************************************************************
 
 #include "ngraph/pattern/op/any_output.hpp"
+#include "ngraph/log.hpp"
 #include "ngraph/pattern/matcher.hpp"
 
 using namespace std;
@@ -27,9 +28,31 @@ const NodeTypeInfo& pattern::op::AnyOutput::get_type_info() const
     return type_info;
 }
 
+pattern::op::AnyOutput::AnyOutput(const std::shared_ptr<Node>& pattern)
+    : Pattern(pattern->outputs())
+{
+    // size_t i = 0;
+    // for (Output<Node> output : pattern->outputs())
+    // {
+    //     set_output_type(i++, output.get_element_type(), output.get_shape());
+    // }
+}
+
 bool pattern::op::AnyOutput::match_value(Matcher* matcher,
                                          const Output<Node>& pattern_value,
                                          const Output<Node>& graph_value)
 {
-    return input_value(0).get_node()->match_node(matcher, graph_value);
+    NGRAPH_INFO << graph_value << " $$$$$ " << pattern_value;
+    NGRAPH_INFO << *this;
+    for (Input<Node> input : inputs())
+    {
+        Output<Node> output = input.get_source_output();
+        NGRAPH_INFO << "compare " << output << " to " << graph_value;
+        // if (matcher->match_value(output, graph_value))
+        // {
+        //     NGRAPH_INFO << "#########";
+        //     return true;
+        // }
+    }
+    return false;
 }
