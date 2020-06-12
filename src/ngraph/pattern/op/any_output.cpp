@@ -42,17 +42,17 @@ bool pattern::op::AnyOutput::match_value(Matcher* matcher,
                                          const Output<Node>& pattern_value,
                                          const Output<Node>& graph_value)
 {
-    NGRAPH_INFO << graph_value << " $$$$$ " << pattern_value;
-    NGRAPH_INFO << *this;
-    for (Input<Node> input : inputs())
-    {
-        Output<Node> output = input.get_source_output();
-        NGRAPH_INFO << "compare " << output << " to " << graph_value;
-        // if (matcher->match_value(output, graph_value))
-        // {
-        //     NGRAPH_INFO << "#########";
-        //     return true;
-        // }
-    }
+    // NGRAPH_INFO << graph_value << " $$$$$ " << pattern_value;
+    // NGRAPH_INFO << *this;
+    // for (Input<Node> input : inputs())
+    // {
+    //     Output<Node> output = input.get_source_output();
+    //     NGRAPH_INFO << "compare " << output << " to " << graph_value;
+    //     // if (matcher->match_value(output, graph_value))
+    //     // {
+    //     //     NGRAPH_INFO << "#########";
+    //     //     return true;
+    //     // }
+    // }
     return false;
 }
