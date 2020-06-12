@@ -55,7 +55,6 @@
 #include "ngraph/pass/graph_rewrite.hpp"
 #include "ngraph/pass/manager.hpp"
 #include "ngraph/pass/reshape_elimination.hpp"
-#include "ngraph/pass/visualize_tree.hpp"
 #include "ngraph/pattern/matcher.hpp"
 #include "ngraph/pattern/op/label.hpp"
 #include "ngraph/pattern/op/skip.hpp"
@@ -3622,23 +3621,19 @@ TEST(cpu_fusion, fuse_rnn_across_layer_2layer_3timestep)
     }
 }
 
-TEST(cpu_fusion, fuse_bidirectional_rnn)
+TEST(cpu_fusion, fuse_bi_directional_rnn)
 {
     DisableRemoveGOE nogoe;
     pass::Manager pass_manager;
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("test_pre.pdf");
     pass_manager.register_pass<runtime::cpu::pass::LSTMFusion>();
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("LSTMFusion.pdf");
     pass_manager.register_pass<runtime::cpu::pass::RNNFusion>();
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("RNNFusion.pdf");
     pass_manager.register_pass<ngraph::pass::AlgebraicSimplification>();
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("AlgebraicSimplification.pdf");
     pass_manager.register_pass<runtime::cpu::pass::MultiLayerRNNFusion>();
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("MultiLayerRNNFusion.pdf");
     pass_manager.register_pass<runtime::cpu::pass::BiDirectionalRnn>();
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("test_post.pdf");
     const string json_path = file_util::path_join(SERIALIZED_ZOO, "mxnet/lstm_bi_directional.json");
-    shared_ptr<Function> func = ngraph::deserialize(json_path);
+    const string json_string = file_util::read_file_to_string(json_path);
+    stringstream ss(json_string);
+    shared_ptr<Function> func = ngraph::deserialize(ss);
     pass_manager.run_passes(func);
     // Bidirectional graph pass will folds the reverse seq
     auto rev_seq_ops = get_ops_of_type<op::Reverse>(func);
@@ -3698,12 +3693,12 @@ TEST(cpu_fusion, fuse_lstm_cells)
 {
     DisableRemoveGOE nogoe;
     pass::Manager pass_manager;
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("fuse_lstm_cells_pre.pdf");
     pass_manager.register_pass<runtime::cpu::pass::LSTMFusion>();
-    pass_manager.register_pass<ngraph::pass::VisualizeTree>("fuse_lstm_cells_post.pdf");
     const string json_path =
         file_util::path_join(SERIALIZED_ZOO, "mxnet/2rnn_layer_3lstm_cell.json");
-    shared_ptr<Function> func = ngraph::deserialize(json_path);
+    const string json_string = file_util::read_file_to_string(json_path);
+    stringstream ss(json_string);
+    shared_ptr<Function> func = ngraph::deserialize(ss);
     pass_manager.run_passes(func);
     auto lstm_ops = get_ops_of_type<op::Lstm>(func);
     EXPECT_EQ(lstm_ops.size(), 6);

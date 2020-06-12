@@ -463,31 +463,16 @@ void ngraph::runtime::cpu::pass::LSTMFusion::construct_lstm_fprop()
         auto lstm_node = std::make_shared<ngraph::op::Lstm>(
             src_layer, hidden_state, cell_state, weights_layer, weights_iter, bias, rnn_type);
 
-// #define WITH_GOE
-#ifdef WITH_GOE
-        auto lstm_ht_output = std::make_shared<ngraph::op::GetOutputElement>(lstm_node, 1);
-        auto lstm_ct_output = std::make_shared<ngraph::op::GetOutputElement>(lstm_node, 2);
-#endif
-
         // Now identify the nodes which consumes the output of LSTM nodes
         // and replace them accordingly
         // find the user's for {ct} and replace them with lstm_goe_2
         if (ngraph::is_used(pattern_map[ct_label].get_node_shared_ptr().get()))
         {
-#ifdef WITH_GOE
-            replace_collapse_node_user(pattern_map[ct_label].get_node_shared_ptr(),
-                                       lstm_ct_output->output(0));
-#else
             replace_collapse_node_user(pattern_map[ct_label].get_node_shared_ptr(),
                                        lstm_node->output(2));
-#endif
         }
-// find the user's for {ht} and replace them with lstm_goe_1
-#ifdef WITH_GOE
-        ngraph::replace_node(m.get_match_root(), lstm_ht_output);
-#else
+        // find the user's for {ht} and replace them with lstm_goe_1
         m.get_match_value().replace(lstm_node->output(1));
-#endif
         return true;
     };
     auto m = std::make_shared<pattern::Matcher>(ht, "LSTMFusion.Fprop");
