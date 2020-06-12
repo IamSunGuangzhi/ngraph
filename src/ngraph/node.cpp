@@ -23,7 +23,6 @@
 #include "ngraph/descriptor/input.hpp"
 #include "ngraph/descriptor/layout/tensor_layout.hpp"
 #include "ngraph/graph_util.hpp"
-#include "ngraph/log.hpp"
 #include "ngraph/node.hpp"
 #include "ngraph/op/constant.hpp"
 #include "ngraph/op/get_output_element.hpp"
@@ -879,18 +878,14 @@ bool Node::match_value(pattern::Matcher* matcher,
                        const Output<Node>& pattern_value,
                        const Output<Node>& graph_value)
 {
-    NGRAPH_INFO << graph_value << ", " << pattern_value;
     if (pattern_value.get_index() != graph_value.get_index() ||
         (matcher->is_strict_mode() &&
          (!pattern_value.get_element_type().compatible(graph_value.get_element_type()) ||
           !pattern_value.get_partial_shape().compatible(graph_value.get_partial_shape()))))
     {
-        NGRAPH_INFO;
         return false;
     }
-    bool rc = match_node(matcher, graph_value);
-    NGRAPH_INFO << rc << " " << graph_value;
-    return rc;
+    return match_node(matcher, graph_value);
 }
 
 bool Node::match_node(pattern::Matcher* matcher, const Output<Node>& graph_value)
