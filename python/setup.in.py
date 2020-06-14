@@ -32,22 +32,23 @@ NGRAPH_PYTHON_DEBUG = os.environ.get("NGRAPH_PYTHON_DEBUG")
 
 
 def find_ngraph_dist_dir():
-    """Return location of compiled ngraph library home."""
-    if os.environ.get("NGRAPH_CPP_BUILD_PATH"):
-        ngraph_dist_dir = os.environ.get("NGRAPH_CPP_BUILD_PATH")
-    else:
-        ngraph_dist_dir = os.path.join(NGRAPH_DEFAULT_INSTALL_DIR, "ngraph_dist")
+    # """Return location of compiled ngraph library home."""
+    # if os.environ.get("NGRAPH_CPP_BUILD_PATH"):
+    #     ngraph_dist_dir = os.environ.get("NGRAPH_CPP_BUILD_PATH")
+    # else:
+    #     ngraph_dist_dir = os.path.join(NGRAPH_DEFAULT_INSTALL_DIR, "ngraph_dist")
 
-    found = os.path.exists(os.path.join(ngraph_dist_dir, "include/ngraph"))
-    if not found:
-        print(
-            "Cannot find nGraph library in {} make sure that "
-            "NGRAPH_CPP_BUILD_PATH is set correctly".format(ngraph_dist_dir)
-        )
-        sys.exit(1)
-    else:
-        print("nGraph library found in {}".format(ngraph_dist_dir))
-        return ngraph_dist_dir
+    # found = os.path.exists(os.path.join(ngraph_dist_dir, "include/ngraph"))
+    # if not found:
+    #     print(
+    #         "Cannot find nGraph library in {} make sure that "
+    #         "NGRAPH_CPP_BUILD_PATH is set correctly".format(ngraph_dist_dir)
+    #     )
+    #     sys.exit(1)
+    # else:
+    #     print("nGraph library found in {}".format(ngraph_dist_dir))
+    #     return ngraph_dist_dir
+    ngraph_dist_dir = ${PROJECT_ROOT_DIRECTORY}/src/
 
 
 def find_pybind_headers_dir():
@@ -227,6 +228,8 @@ packages = [
 ]
 
 sources = [PYNGRAPH_SRC_DIR + "/" + source for source in sources]
+
+print("This is a test *****************************************************\n")
 
 include_dirs = [PYNGRAPH_SRC_DIR, NGRAPH_CPP_INCLUDE_DIR, PYBIND11_INCLUDE_DIR]
 
