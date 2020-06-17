@@ -41,8 +41,10 @@ void MLIRSubgraphExtractionPass::MLIRSubgraph::add_inputs(NodeVector &inputs) {
 }
 
 void MLIRSubgraphExtractionPass::MLIRSubgraph::add_outputs(
-    NodeVector &outputs) {
-  m_output_nodes.insert(m_output_nodes.end(), outputs.begin(), outputs.end());
+    OutputVector &outputs) {
+  for (Output<Node> output : outputs) {
+    m_output_nodes.push_back(output.get_node_shared_ptr());
+  }
 }
 
 void MLIRSubgraphExtractionPass::MLIRSubgraph::add_node(
@@ -226,8 +228,8 @@ void MLIRSubgraphExtractionPass::build_subgraphs(
        it != m_id_to_graph.end(); it++) {
     MLIRSubgraph &sg = it->second;
     auto &nodes = sg.get_nodes();
-    NodeVector outputs = get_subgraph_outputs(
-        NodeVector(nodes.begin(), nodes.end()), {} /*exclusions*/,
+    OutputVector outputs = get_subgraph_outputs(
+        OutputVector(nodes.begin(), nodes.end()), {} /*exclusions*/,
         false /* ignore unused */, false /* ignore output duplicates */);
     sg.add_outputs(outputs);
   }

@@ -54,7 +54,7 @@ class MLIRSubgraphExtractionPass : public ngraph::pass::FunctionPass {
     /// Add a list of input nodes to the sub-graph.
     void add_inputs(NodeVector &inputs);
     /// Add a list of output nodes to the sub-graph.
-    void add_outputs(NodeVector &outputs);
+    void add_outputs(OutputVector &outputs);
     /// Add one node to the sub-graph.
     void add_node(std::shared_ptr<Node> node);
 

@@ -440,9 +440,9 @@ namespace ngraph
 
     NGRAPH_API
     OutputVector get_subgraph_outputs(const OutputVector& nodes,
-                                    const NodeVector& exclusions,
-                                    bool ignore_unused = false,
-                                    bool ignore_output_duplicates = true);
+                                      const NodeVector& exclusions,
+                                      bool ignore_unused = false,
+                                      bool ignore_output_duplicates = true);
 
     // Extract sub-graph computing the `results`. Stops backward traversal at either a Parameter
     // node or a node that belongs to args

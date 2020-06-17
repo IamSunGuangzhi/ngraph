@@ -600,9 +600,9 @@ bool ngraph::is_one(const Output<Node>& reduce_constant)
 }
 
 OutputVector ngraph::get_subgraph_outputs(const OutputVector& nodes,
-                                        const NodeVector& exclusions,
-                                        bool ignore_unused,
-                                        bool ignore_output_duplicates)
+                                          const NodeVector& exclusions,
+                                          bool ignore_unused,
+                                          bool ignore_output_duplicates)
 {
     std::set<shared_ptr<Node>> exclusions_set(exclusions.begin(), exclusions.end());
     std::set<Output<Node>> nodes_set(nodes.begin(), nodes.end());
