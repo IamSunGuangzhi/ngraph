@@ -439,7 +439,7 @@ namespace ngraph
     bool is_zero(const Output<Node>& reduce_constant);
 
     NGRAPH_API
-    NodeVector get_subgraph_outputs(const NodeVector& nodes,
+    OutputVector get_subgraph_outputs(const OutputVector& nodes,
                                     const NodeVector& exclusions,
                                     bool ignore_unused = false,
                                     bool ignore_output_duplicates = true);

@@ -599,24 +599,24 @@ bool ngraph::is_one(const Output<Node>& reduce_constant)
     return result_bool;
 }
 
-NodeVector ngraph::get_subgraph_outputs(const NodeVector& nodes,
+OutputVector ngraph::get_subgraph_outputs(const OutputVector& nodes,
                                         const NodeVector& exclusions,
                                         bool ignore_unused,
                                         bool ignore_output_duplicates)
 {
     std::set<shared_ptr<Node>> exclusions_set(exclusions.begin(), exclusions.end());
-    std::set<shared_ptr<Node>> nodes_set(nodes.begin(), nodes.end());
+    std::set<Output<Node>> nodes_set(nodes.begin(), nodes.end());
 
-    NodeVector outputs;
+    OutputVector outputs;
 
     for (auto n : nodes)
     {
-        if (exclusions_set.count(n) != 0)
+        if (exclusions_set.count(n.get_node_shared_ptr()) != 0)
         {
             continue;
         }
 
-        for (const auto& u : n->get_users())
+        for (const auto& u : n.get_node()->get_users())
         {
             bool add_output = nodes_set.count(u) == 0 && (!ignore_unused || is_used(u.get()));
             // check if output is already captured
